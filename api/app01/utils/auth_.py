@@ -7,6 +7,7 @@ from django.conf import settings
 from app01 import models
 from rest_framework.exceptions import AuthenticationFailed
 
+
 class LoginAuth(BaseAuthentication):
     """登录状态认证（可根据请求判断是否执行）"""
 
@@ -17,7 +18,7 @@ class LoginAuth(BaseAuthentication):
             userinfo = jwt.decode(token, settings.SECRET_KEY, algorithms="HS256")
             username = userinfo.get("username")
             password = userinfo.get("password")
-            print(password, username)
+            print(username, password)
             userobj = models.Admin.objects.filter(username=username, password=password).first()
             if userobj:
                 return userobj, token  # request.user  request.auth
@@ -27,8 +28,6 @@ class LoginAuth(BaseAuthentication):
 
     def authenticate_header(self, request):
         return "API"
-
-
 
 
 class LoginAuth2(BaseAuthentication):

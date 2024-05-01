@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
-from app01.views import admininfo, upload,book
+from app01.views import admininfo, upload, book
 from api import settings
 
 urlpatterns = [
@@ -25,9 +25,9 @@ urlpatterns = [
     path("api/register/", admininfo.RegisterView.as_view()),
     path("api/login/", admininfo.LoginView.as_view()),
 
-
-    path("api/book/",book.BookView.as_view({"get":"list","post":"create"})),
-    path("api/book/<int:pk>/",book.BookView.as_view({"get":"retrieve","put":"update","delete":"destroy"})),
+    path("api/book/", book.BookView.as_view({"get": "list", "post": "create", "delete": "delete"})),
+    path("api/book/<int:pk>/", book.BookView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
+    # path("api/book/search/",book.BookSearchView.as_view())，
 
     # 上传头像
     path("upload/", upload.AvatarUpload.as_view()),

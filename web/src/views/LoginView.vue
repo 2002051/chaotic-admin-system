@@ -142,11 +142,12 @@ const doSubmit = function () {
     } else {
       // 登录成功，将token存储在cookies中
       store.doSaveToken(res.data.data["token"])
+      store.doSaveInfo(res.data.data.data)
       ElMessage({
         message: '登录成功!',
         type: 'success',
       })
-      router.push({"name": "home"})
+      router.push({"name": "overview"})
     }
   })
 }

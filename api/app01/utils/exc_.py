@@ -26,6 +26,7 @@ class MyAuthenticationFeild(AuthenticationFailed):
 
 
 def MyExcHandler(exc, context):
+    print("exc类型", type(exc))
 
     if isinstance(exc, Http404):
         exc = exceptions.NotFound(*(exc.args))
@@ -39,7 +40,6 @@ def MyExcHandler(exc, context):
         exc.x_code = 1003
 
     if isinstance(exc, exceptions.APIException):
-        print("exc", type(exc))
 
         headers = {}
         if getattr(exc, 'auth_header', None):

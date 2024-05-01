@@ -1,26 +1,30 @@
 <template>
-  <div>
+  <div >
     <el-button type="primary" @click="doCreate">新增</el-button>
-    <el-button>批量删除</el-button>
+    <el-button @click="doDeleteSelected">批量删除</el-button>
     <span style="margin-left: 24px;">
-    <el-input v-model="kd" style="width: 240px;margin-left: 12px;" placeholder="请输入关键字"/>
-      <el-button type="primary">
+    <el-input v-model="kw" style="width: 240px;margin-left: 12px;" placeholder="请输入关键字"/>
+      <el-button type="primary" @click="doSearch">
              <el-icon>
                 <Search/>
               </el-icon>
       </el-button>
   </span>
+
+    <el-button v-if="!!selectedList.length" :icon="Printer" @click="exportSelectedSub" style="margin-left: 10px;background-color: #eaeaea">导出</el-button>
+
   </div>
 
-  <div>
-    <el-table :data="datalist" style="width: 100%;height: 95%" @selection-change="handleSelectionChange">
+  <div v-loading="loading">
+    <el-table  :data="datalist" style="width: 100%;height: 95%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"/>
       <!--      <el-table-column type="index" label="" :index="indexMethod" />-->
       <el-table-column prop="id" label="ID" idth="180"/>
       <el-table-column prop="title" label="标题" width="180"/>
       <el-table-column prop="image" label="封面图片" min-width="180" wwidth="180">
         <template #default="scrop">
-          <el-image style="width: 100px; height: 100px" :src="static_url + scrop.row.image" :fit="scrop.$index"/>
+          <!--          <el-image style="width: 100px; height: 100px" :src="static_url + scrop.row.image" :fit="scrop.$index"/>-->
+          <el-image style="width: 100px; height: 100px" :src="static_url + scrop.row.image"/>
         </template>
       </el-table-column>
       <el-table-column prop="author" label="作者" width="180"/>
@@ -42,7 +46,19 @@
         </template>
       </el-table-column>
     </el-table>
+    <!--    分页   -->
+    <div style="margin-top: 20px;">
+      <el-pagination
+          :total="page.totalCount"
+          :page-size="page.perPageSize"
+          background
+          layout=" prev, pager, next, jumper"
+          @current-change="handleChangePage"
+      ></el-pagination>
+    </div>
   </div>
+
+
   <!--  黑色幕布  -->
   <div v-show="dialog" class="mask"></div>
   <!--  编辑或保存对话框 -->
@@ -71,8 +87,8 @@
               class="avatar-uploader"
               :action="static_url + '/upload/bookimg/'"
               :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload"
+              :on-success="handleSuccess"
+              :before-upload="beforeUpload"
           >
             <img v-if="form.image" :src="static_url + form.image" class="avatar" style="width: 150px;height: 120px"/>
             <img v-if="!form.image" :src="static_url + `/media/book_img/default.jpg`" class="avatar"
@@ -92,7 +108,7 @@
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="dialog=false,form={}">取消</el-button>
+          <el-button @click="dialog=false;form={}">取消</el-button>
           <el-button type="primary" @click="doSave">
             {{ isedit ? '保存' : '确认创建' }}
           </el-button>
@@ -104,19 +120,26 @@
 
 <script setup>
 import {ref, onMounted} from "vue"
-import {Search} from '@element-plus/icons-vue'
+import {Search,Printer} from '@element-plus/icons-vue'
 import _axios from "@/plugins/axios.js";
 import {static_url} from "@/plugins/config.js";
 import {userInfoStore} from "@/stores/counter.js";
 import {ElMessage} from "element-plus";
+import * as XLSX from 'xlsx'
 
-const kd = ref("")
+const store = userInfoStore()
+const loading = ref(false)
+const kw = ref("")
+const page = ref(({
+  totalCount: 100,
+  perPageSize: 10,
+}))
+var datalist = ref([])
 const isedit = ref(false)
-
 var form = ref({image: "/media/book_img/default.jpg"})  // 绑定对话框的表单字段内容
 var rules = ref({
   title: [{
-    required: true, message: "昵称不能为空"
+    required: true, message: "标题不能为空"
   }],
   author: [{
     required: true, message: "作者不能为空"
@@ -133,30 +156,31 @@ var formError = ref({
   author: "",
   price: ""
 })
-var datalist = ref([])
-const store = userInfoStore()
 var isLoading = ref(true) // 是否正在加载
 var dialog = ref(false)
-
 const editid = ref(null)
 const editidx = ref(null)
-
+const selectedList = ref({})
 onMounted(function (e) {
-  _axios.get(`/api/book/`, {
-    headers: {
-      "token": store.token
-    },
-  }).then(function (res) {
-    datalist.value = res.data.data.results
-    console.log("datalist.value", datalist.value)
-  })
+  fetchDatalist()
+
+  // _axios.get(`/api/book/`, {
+  //   headers: {
+  //     "token": store.token
+  //   },
+  // }).then(function (res) {
+  //   datalist.value = res.data.data.results
+  //   page.value.totalCount = res.data.data.count
+  //   console.log("datalist.value", datalist.value)
+  // })
 })
 
 function handleSelectionChange(val) {
-  console.log("val", val)
+  selectedList.value = val
+  console.log("val", selectedList.value)
 }
 
-
+// 打开新建版dialog
 function doCreate() {
   //点击新增按钮
   isedit.value = false
@@ -164,6 +188,8 @@ function doCreate() {
 
 }
 
+
+// 打开编辑版dialog
 function doEdit(id, idx) {
   // 编辑
   console.log(123, datalist.value[idx])
@@ -174,6 +200,7 @@ function doEdit(id, idx) {
   dialog.value = true
 }
 
+// 执行保存逻辑（新增&删除）
 function doSave() {
   // console.log("保存:", form.value)
   // console.log("错误信息:", formError.value)
@@ -227,6 +254,7 @@ function doSave() {
   }
 }
 
+// 执行删除逻辑
 function doDelete(id, idx) {
   console.log("删除", id, idx)
   _axios.delete(`/api/book/${id}/`, {
@@ -243,6 +271,7 @@ function doDelete(id, idx) {
   })
 }
 
+// 新增/编辑dialog 窗口关闭的回调函数
 function handleClose() {
   // dialog 关闭 清空form
   console.log("错误信息", formError.title)
@@ -254,9 +283,100 @@ function handleClose() {
   form.value = {}
 }
 
-
-function handleAvatarSuccess(res) {
+// 图片上传成功的回调函数
+function handleSuccess(res) {
   form.value.image = res.data.path
+}
+
+// 执行搜素哦
+function doSearch() {
+  console.log("kw.value", kw.value)
+  _axios.get(`/api/book/?kw=${kw.value}`, {
+    headers: {
+      token: store.token
+    }
+  }).then(function (res) {
+    if (res.data.code === 0) {
+      ElMessage.success(!!res.data.data.results.length ? "查询成功" : "空空如也")
+      datalist.value = res.data.data.results
+      kw.value = ""
+
+    } else {
+      ElMessage.error("查询异常")
+    }
+  })
+
+
+}
+
+// 上传前夕
+const beforeUpload = (rawFile) => {
+  if (rawFile.type !== 'image/jpeg') {
+    ElMessage.error('必须是图片格式!');
+    return false;
+  } else if (rawFile.size / 1024 / 1024 > 2) {
+    ElMessage.error('图片大小不能大于2MB');
+    return false;
+  }
+  return true;
+};
+
+// 批量删除
+function doDeleteSelected(e) {
+  let toDeleteList = selectedList.value.map((x) => x.id)          // 待删除条目的id
+  _axios.delete("/api/book/", {
+    data: {id_list: JSON.stringify(toDeleteList)},
+    headers: {
+      token: store.token
+    }
+
+  }).then(function (res) {
+    if (res.data.code === 0) {
+      // 反向获取索引
+      // let idxlist= datalist.value.map((item)=>datalist.value.indexOf(item))
+      // idxlist.forEach((x)=>datalist.value.splice(x,1)
+      datalist.value = datalist.value.filter((item) => !selectedList.value.includes(item))
+      ElMessage.success("批量删除成功")
+    } else {
+      ElMessage.error("请求异常")
+    }
+  })
+}
+
+// 换页操作的回调函数
+function handleChangePage(num) {
+  console.log("当前点击了",num)
+  fetchDatalist(num)
+}
+
+// 获取数据
+function fetchDatalist(num) {
+  loading.value = true
+  _axios.get("/api/book/", {params: {page: num ? num : 1},headers:{token:store.token}}).then(function (res) {
+    if (res.data.code === 0) {
+      datalist.value = res.data.data.results
+      page.value = {
+        totalCount: res.data.data.count,
+        // perPageSize: res.data.data.perpagecount,
+      }
+      loading.value = false // 加载完毕
+    } else{
+      console.log("请求异常",res)
+    }
+  }).catch(function (errors) {
+    console.log(errors)
+  })
+}
+
+// 导出excel
+let exportSelectedSub=()=> {
+  // 创建一个XLSX工作簿（workbook）
+  const ws = XLSX.utils.json_to_sheet(selectedList.value);
+  const wb = XLSX.utils.book_new();
+  // 将工作表（worksheet）添加到工作簿中，命名为'Sheet1'
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  // 使用XLSX库的writeFile函数将工作簿保存为XLSX文件并提供下载
+  XLSX.writeFile(wb, 'tableData.xlsx');
 }
 
 </script>
