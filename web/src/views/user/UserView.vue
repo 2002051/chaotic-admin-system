@@ -1,5 +1,5 @@
 <template>
-  <div style="font-size: 20px  "><strong>书籍管理</strong></div>
+  <div style="font-size: 20px  "><strong>用户管理</strong></div>
   <div style="margin-top: 10px">
     <el-button type="primary" @click="doCreate">新增</el-button>
     <el-button @click="doDeleteSelected">批量删除</el-button>
@@ -20,9 +20,9 @@
     <el-table  :data="datalist" style="width: 100%;height: 95%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"/>
       <!--      <el-table-column type="index" label="" :index="indexMethod" />-->
-      <el-table-column prop="id" label="ID" idth="80"/>
+      <el-table-column prop="id" label="ID" idth="180"/>
       <el-table-column prop="title" label="标题" width="180"/>
-      <el-table-column prop="image" label="封面图片" min-width="180" width="180">
+      <el-table-column prop="image" label="封面图片" min-width="180" wwidth="180">
         <template #default="scrop">
           <!--          <el-image style="width: 100px; height: 100px" :src="static_url + scrop.row.image" :fit="scrop.$index"/>-->
           <el-image style="width: 100px; height: 100px" :src="static_url + scrop.row.image"/>
