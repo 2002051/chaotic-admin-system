@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
-from app01.views import admininfo, upload, book
+from app01.views import admininfo, upload, book,campus,biographical,student
 from api import settings
 
 urlpatterns = [
@@ -29,9 +29,23 @@ urlpatterns = [
     path("api/book/<int:pk>/", book.BookView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
     # path("api/book/search/",book.BookSearchView.as_view())，
 
+    path("api/campus/", campus.CampusView.as_view({"get": "list", "post": "create", "delete": "delete"})),
+    path("api/campus/<int:pk>/", campus.CampusView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
+
+    path("api/biographical/", biographical.BiographicalView.as_view({"get": "list", "post": "create", "delete": "delete"})),
+    path("api/biographical/<int:pk>/", biographical.BiographicalView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
+
+    path("api/studentinfo/",student.StudentInfoView.as_view({"get": "list", "post": "create", "delete": "delete"})),
+    path("api/studentinfo/<int:pk>/",student.StudentInfoView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
+
+
     # 上传头像
     path("upload/", upload.AvatarUpload.as_view()),
+    # 上传图书封面
     path("upload/bookimg/", upload.BookimgUpload.as_view()),
+    # 上传pdf简历附件文件
+    path("upload/biographical/",upload.BiographicalUpload.as_view()),
+
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

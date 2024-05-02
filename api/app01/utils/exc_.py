@@ -17,7 +17,8 @@ from rest_framework.response import Response
 from rest_framework.schemas import DefaultSchema
 from rest_framework.settings import api_settings
 from rest_framework.utils import formatting
-from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.exceptions import AuthenticationFailed, APIException
+
 
 class MyAuthenticationFeild(AuthenticationFailed):
     # 无论何种权限异常，状态码都是200
@@ -61,3 +62,12 @@ def MyExcHandler(exc, context):
     data = {"code":-2,"detail":str(exc)}
 
     return Response(data, status=500)
+
+from django.utils.translation import gettext_lazy as _
+
+
+
+class MyException(APIException):
+    status = status.HTTP_200_OK
+    default_detail = _('请求异常')
+    default_code = 'error'

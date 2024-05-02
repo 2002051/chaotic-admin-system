@@ -44,6 +44,37 @@ class LoginSer(serializers.ModelSerializer):
 
 class BookSer(serializers.ModelSerializer):
     """图书视图序列化器"""
+
     class Meta:
         model = models.Book
+        fields = "__all__"
+
+
+class CampusSer(serializers.ModelSerializer):
+    """校区序列化器"""
+
+    class Meta:
+        model = models.Campus
+        fields = "__all__"
+
+
+class BiographicalSer(serializers.ModelSerializer):
+    """pdf简历序列化器"""
+    education = serializers.IntegerField(write_only=True)
+    education_dict = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = models.Biographical
+        fields = "__all__"
+
+    def get_education_dict(self, obj):
+        return {
+            "k": obj.education,
+            "v": obj.get_education_display()
+        }
+
+
+class StudentInfoSer(serializers.ModelSerializer):
+    class Meta:
+        model = models.StudentInfo
         fields = "__all__"
