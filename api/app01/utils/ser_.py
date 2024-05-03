@@ -78,3 +78,10 @@ class StudentInfoSer(serializers.ModelSerializer):
     class Meta:
         model = models.StudentInfo
         fields = "__all__"
+        # depth = 1
+
+
+class MediaSer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Media
+        fields = "__all__"

@@ -70,9 +70,9 @@
                   </el-icon>
                   <span>人员管理</span>
                 </template>
-                <el-menu-item index="user" :route='{name:"user"}'>学生管理</el-menu-item>
+                <el-menu-item index="user" :route='{name:"student"}'>学生管理</el-menu-item>
                 <el-menu-item index="biographical" :route='{name:"biographical"}'>简历列表</el-menu-item>
-                <el-menu-item index="##" :route='{name:"##"}'>测试目录</el-menu-item>
+                <el-menu-item index="media" :route='{name:"media"}'>媒体管理</el-menu-item>
                 <el-menu-item index="##" :route='{name:"##"}'>测试目录</el-menu-item>
               </el-sub-menu>
 

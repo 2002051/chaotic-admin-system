@@ -114,3 +114,122 @@ class BiographicalUpload(MyResponse, APIView):
                 destination.write(chunk)
 
         return Response({'success': '上传成功', 'path': to_save_path}, status=status.HTTP_200_OK)
+
+
+class StudentUpload(MyResponse, APIView):
+    '''简历附件上传'''
+
+    def post(self, request):
+        file_obj = request.FILES.get('file', "")
+
+        if file_obj is None:
+            return Response({'error': '上传失败'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 获取文件名
+        file_name = file_obj.name
+        file_path = os.path.join(settings.MEDIA_ROOT, "biographical", file_name)
+
+        # 判断文件是否已存在
+        count = 1
+        while os.path.exists(file_path):
+            # 文件名后添加编号
+            file_name = f"{os.path.splitext(file_obj.name)[0]} ({count}){os.path.splitext(file_obj.name)[1]}"
+            file_path = os.path.join(settings.MEDIA_ROOT, "userAvatar", file_name)
+            count += 1
+
+        to_save_path = settings.MEDIA_URL + "userAvatar" + "/" + file_name
+
+        with open(file_path, 'wb+') as destination:
+            for chunk in file_obj.chunks():
+                destination.write(chunk)
+
+        return Response({'success': '上传成功', 'path': to_save_path}, status=status.HTTP_200_OK)
+
+class ImageUpload(MyResponse,APIView):
+    '''媒体图片上传'''
+    def post(self, request):
+        file_obj = request.FILES.get('file', "")
+
+        if file_obj is None:
+            return Response({'error': '上传失败'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 获取文件名
+        file_name = file_obj.name
+        file_path = os.path.join(settings.MEDIA_ROOT, "image", file_name)
+
+        # 判断文件是否已存在
+        count = 1
+        while os.path.exists(file_path):
+            # 文件名后添加编号
+            file_name = f"{os.path.splitext(file_obj.name)[0]} ({count}){os.path.splitext(file_obj.name)[1]}"
+            file_path = os.path.join(settings.MEDIA_ROOT, "image", file_name)
+            count += 1
+
+        to_save_path = settings.MEDIA_URL + "image" + "/" + file_name
+
+        with open(file_path, 'wb+') as destination:
+            for chunk in file_obj.chunks():
+                destination.write(chunk)
+
+        return Response({'success': '上传成功', 'path': to_save_path}, status=status.HTTP_200_OK)
+
+class AudioUpload(MyResponse,APIView):
+    '''媒体音频上传'''
+    def post(self, request):
+
+
+
+        file_obj = request.FILES.get('file', "")
+
+        if file_obj is None:
+            return Response({'error': '上传失败'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 获取文件名
+        file_name = file_obj.name
+        file_path = os.path.join(settings.MEDIA_ROOT, "audio", file_name)
+
+        # 判断文件是否已存在
+        count = 1
+        while os.path.exists(file_path):
+            # 文件名后添加编号
+            file_name = f"{os.path.splitext(file_obj.name)[0]} ({count}){os.path.splitext(file_obj.name)[1]}"
+            file_path = os.path.join(settings.MEDIA_ROOT, "audio", file_name)
+            count += 1
+
+        to_save_path = settings.MEDIA_URL + "audio" + "/" + file_name
+
+        with open(file_path, 'wb+') as destination:
+            for chunk in file_obj.chunks():
+                destination.write(chunk)
+
+        return Response({'success': '上传成功', 'path': to_save_path}, status=status.HTTP_200_OK)
+
+class VideoUpload(MyResponse,APIView):
+    '''媒体视频上传'''
+    def post(self, request):
+        file_obj = request.FILES.get('file', "")
+
+        if file_obj is None:
+            return Response({'error': '上传失败'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 获取文件名
+        file_name = file_obj.name
+        file_path = os.path.join(settings.MEDIA_ROOT, "video", file_name)
+
+        # 判断文件是否已存在
+        count = 1
+        while os.path.exists(file_path):
+            # 文件名后添加编号
+            file_name = f"{os.path.splitext(file_obj.name)[0]} ({count}){os.path.splitext(file_obj.name)[1]}"
+            file_path = os.path.join(settings.MEDIA_ROOT, "video", file_name)
+            count += 1
+
+        to_save_path = settings.MEDIA_URL + "video" + "/" + file_name
+
+        with open(file_path, 'wb+') as destination:
+            for chunk in file_obj.chunks():
+                destination.write(chunk)
+
+        return Response({'success': '上传成功', 'path': to_save_path}, status=status.HTTP_200_OK)
+
+

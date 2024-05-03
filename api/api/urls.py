@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
-from app01.views import admininfo, upload, book,campus,biographical,student
+from app01.views import admininfo, upload, book, campus, biographical, student,medias
 from api import settings
 
 urlpatterns = [
@@ -32,20 +32,33 @@ urlpatterns = [
     path("api/campus/", campus.CampusView.as_view({"get": "list", "post": "create", "delete": "delete"})),
     path("api/campus/<int:pk>/", campus.CampusView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
 
-    path("api/biographical/", biographical.BiographicalView.as_view({"get": "list", "post": "create", "delete": "delete"})),
-    path("api/biographical/<int:pk>/", biographical.BiographicalView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
+    path("api/biographical/",
+         biographical.BiographicalView.as_view({"get": "list", "post": "create", "delete": "delete"})),
+    path("api/biographical/<int:pk>/",
+         biographical.BiographicalView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
 
-    path("api/studentinfo/",student.StudentInfoView.as_view({"get": "list", "post": "create", "delete": "delete"})),
-    path("api/studentinfo/<int:pk>/",student.StudentInfoView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
+    path("api/student/", student.StudentInfoView.as_view({"get": "list", "post": "create", "delete": "delete"})),
+    path("api/student/<int:pk>/",
+         student.StudentInfoView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
 
+    path("api/medias/", medias.MediaView.as_view({"get": "list", "post": "create", "delete": "delete"})),
+    path("api/medias/<int:pk>/",medias.MediaView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
 
     # 上传头像
     path("upload/", upload.AvatarUpload.as_view()),
     # 上传图书封面
     path("upload/bookimg/", upload.BookimgUpload.as_view()),
     # 上传pdf简历附件文件
-    path("upload/biographical/",upload.BiographicalUpload.as_view()),
+    path("upload/biographical/", upload.BiographicalUpload.as_view()),
+    # 上传学生照片
+    path("upload/student/", upload.StudentUpload.as_view()),
 
+    # 上传媒体图片
+    path("upload/image/",upload.ImageUpload.as_view()),
+    # 媒体音频
+    path("upload/audio/",upload.AudioUpload.as_view()),
+    # 媒体视频
+    path("upload/video/",upload.VideoUpload.as_view()),
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

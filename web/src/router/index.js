@@ -49,6 +49,16 @@ const router = createRouter({
                     component: () => import('../views/user/BiographicalView.vue')
                 },
                 {
+                    path: 'student',
+                    name: 'student',
+                    component: () => import('../views/user/StudentView.vue')
+                },
+                {
+                    path: 'media',
+                    name: 'media',
+                    component: () => import('../views/user/MediaView.vue')
+                },
+                {
                     path: 'test',
                     name: 'test',
                     component: () => import('../views/TestView.vue')

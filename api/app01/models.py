@@ -31,9 +31,9 @@ class Campus(models.Model):
 class StudentInfo(models.Model):
     nickname = models.CharField(verbose_name="昵称", max_length=64)
     avatar = models.CharField(verbose_name="照片", max_length=64, default="/media/userAvatar/default.jpg")
-    campus = models.ForeignKey(verbose_name="校区",to="Campus",on_delete=models.CASCADE)
+    campus = models.ForeignKey(verbose_name="校区", to="Campus", on_delete=models.CASCADE)
     birth = models.DateTimeField(verbose_name="出生日期")
-    isgraduate = models.BooleanField(verbose_name="是否毕业",default=False)
+    isgraduate = models.BooleanField(verbose_name="是否毕业", default=False)
     # createtime = models.DateTimeField(verbose_name="创建时间",auto_now_add=True)
 
 
@@ -46,3 +46,12 @@ class Biographical(models.Model):
     )
     education = models.SmallIntegerField(verbose_name="教育水平", choices=choice_tul)
     attachment = models.CharField(verbose_name="简历附件", max_length=255)
+
+
+class Media(models.Model):
+    """媒体展示表"""
+    title = models.CharField(verbose_name="标题", max_length=64)
+    image = models.CharField(verbose_name="图片", max_length=128)
+    audio = models.CharField(verbose_name="音频", max_length=128)
+    video = models.CharField(verbose_name="视频", max_length=128)
+    create_time = models.DateTimeField(verbose_name="上传时间",auto_now_add=True)

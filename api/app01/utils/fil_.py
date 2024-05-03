@@ -28,3 +28,20 @@ class BiographicalFilterByKw(BaseFilterBackend):
         if not kw:
             return queryset
         return queryset.filter(name__icontains=kw)
+
+class StudentFilterByKw(BaseFilterBackend):
+    """简历列表专用过滤器"""
+    def filter_queryset(self, request, queryset, view):
+        kw = request.query_params.get("kw", "")
+        if not kw:
+            return queryset
+        return queryset.filter(nickname__icontains=kw)
+
+class MediaFilterByKw(BaseFilterBackend):
+    """媒体文件标题过滤器"""
+
+    def filter_queryset(self, request, queryset, view):
+        kw = request.query_params.get("kw", "")
+        if not kw:
+            return queryset
+        return queryset.filter(title__icontains=kw)
