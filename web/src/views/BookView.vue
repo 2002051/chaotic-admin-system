@@ -244,7 +244,8 @@ function doSave() {
       if (res.data.code === 0) {
         dialog.value = false
         // datalist.value.splice(0, 0, res.data.data);
-        datalist.value.push(res.data.data);
+        // datalist.value.push(res.data.data);
+        datalist.value.unshift(res.data.data);
         form.value = {image: "/media/book_img/default.jpg"}
         Object.keys(formError.value).forEach((x) => {
           formError.value[x] = ""

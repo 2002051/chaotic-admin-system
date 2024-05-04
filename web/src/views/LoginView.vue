@@ -148,6 +148,7 @@ const doSubmit = function () {
         type: 'success',
       })
       router.push({"name": "overview"})
+
     }
   })
 }

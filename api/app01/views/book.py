@@ -15,6 +15,11 @@ from app01.utils.exc_ import MyException
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import APIException, ValidationError
 
+from app01.mine_signals import my_signal
+
+
+
+
 
 class BookPagenation(PageNumberPagination):
     page_size = 10
@@ -25,12 +30,13 @@ class BookView(MyResponse, ModelViewSet):
 
     authentication_classes = [LoginAuth]
     serializer_class = BookSer
-    queryset = models.Book.objects.all().order_by("id")
+    queryset = models.Book.objects.all().order_by("-id")
     filter_backends = [BookFilterByKw]
 
     # pagination_class = BookPagenation
 
     def destroy(self, request, *args, **kwargs):
+        my_signal.send("手动传递参数")
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_200_OK)

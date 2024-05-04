@@ -44,6 +44,12 @@ urlpatterns = [
     path("api/medias/", medias.MediaView.as_view({"get": "list", "post": "create", "delete": "delete"})),
     path("api/medias/<int:pk>/",medias.MediaView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
 
+    # 视频播放相关
+    path("api/video/list/", medias.VideoView.as_view()),
+    path("api/video/blog/", medias.BlogView.as_view()),
+
+
+
     # 上传头像
     path("upload/", upload.AvatarUpload.as_view()),
     # 上传图书封面

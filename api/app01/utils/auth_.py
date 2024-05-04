@@ -12,6 +12,9 @@ class LoginAuth(BaseAuthentication):
     """登录状态认证（可根据请求判断是否执行）"""
 
     def authenticate(self, request):
+        # 如果是预检则跳过认证
+        if request.method=="OPTIONS":
+            return
         try:
             token = request.headers.get("token")
             # 解开token 从获取用户名密码，然后校验

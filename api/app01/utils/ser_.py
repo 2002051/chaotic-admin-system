@@ -85,3 +85,8 @@ class MediaSer(serializers.ModelSerializer):
     class Meta:
         model = models.Media
         fields = "__all__"
+
+class VideoSer(serializers.Serializer):
+    id = serializers.IntegerField()
+    title = serializers.CharField()
+    video = serializers.CharField()

@@ -11,12 +11,17 @@ import VueCookies from "vue3-cookies";
 
 import App from './App.vue'
 import router from './router'
-
+// import videojs from 'video.js';
+// import 'video.js/dist/video-js.css';
+// import 'videojs-contrib-quality-levels';
+// import 'videojs-http-streaming';
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
 app.use(ElementPlus)  //全局注册element-plus
 app.use(VueCookies)
+
+// app.provide('video', videojs);
 
 app.mount('#app')

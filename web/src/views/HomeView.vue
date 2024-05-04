@@ -76,11 +76,11 @@
                 <el-menu-item index="##" :route='{name:"##"}'>测试目录</el-menu-item>
               </el-sub-menu>
 
-              <el-menu-item index="4" disabled>
+              <el-menu-item index="video">
                 <el-icon>
-                  <setting/>
+                  <VideoPlay/>
                 </el-icon>
-                <span>Navigator Four</span>
+                <span>视频播放</span>
               </el-menu-item>
               <!--       二级菜单     -->
               <el-sub-menu index="user2" disabled>
@@ -149,7 +149,7 @@
   </template>
 
   <script setup>
-  import {Document, Menu as IconMenu, Location, Setting, Notebook,School,User} from '@element-plus/icons-vue'
+  import {Document, Menu as IconMenu, Location, Setting, Notebook,School,User,VideoPlay} from '@element-plus/icons-vue'
   import {ref, onBeforeMount, onMounted} from 'vue'
   import {useCookies} from "vue3-cookies";
   import {userInfoStore} from "@/stores/counter.js";
