@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="db" uuid="c84612fd-77bb-4674-9a8f-11d097d9be88">
+    <data-source source="LOCAL" name="db" uuid="89ade2ed-9ba3-41ad-91ea-ebcb1027e4b9">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:E:\pythonlearning\定制后台管理系统\api\db.sqlite3</jdbc-url>
+      <jdbc-url>jdbc:sqlite:D:\myAPI\p2API\chaotic-admin-system\api\db.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
       <libraries>
         <library>

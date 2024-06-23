@@ -1,5 +1,12 @@
 from django.db import models
 
+class User(models.Model):
+    """移动端用户"""
+    username = models.CharField(verbose_name="用户名", max_length=64)
+    password = models.CharField(verbose_name="密码", max_length=64)
+    phone = models.CharField(verbose_name="手机号", max_length=11)
+
+
 
 # Create your models here.
 class Admin(models.Model):

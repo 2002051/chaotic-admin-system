@@ -1,5 +1,7 @@
 import jwt
 from django.conf import settings
+
+
 def get_jwt(payload):
     headers = {
         'typ': 'jwt',

@@ -1,10 +1,48 @@
 # 序列化器
 import datetime
+import re
 
+from django_redis import get_redis_connection
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from app01 import models
 from app01.utils.jwt_ import get_jwt
+
+class RegistSer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+    phone = serializers.CharField()
+    code = serializers.CharField()
+
+    def validate_username(self,value):
+        print("value",value)
+        obj = models.User.objects.filter(username=value).first()
+        if obj:
+            raise Exception("用户名已存在")
+        return value
+    # def validate_phone(self, value):
+    #     obj = models.User.objects.filter(phone=value).first()
+        # pattern = re.compile(r'^1[3456789]\d{9}$')
+        # phone = self.initial_data.get("phone")
+        # if not re.match(pattern, phone):
+        #     raise Exception("手机号格式不正确")
+
+
+    def validate_code(self, value):
+        conn = get_redis_connection("default")
+        phone = self.initial_data.get("phone")
+        # print("aaa")
+        try:
+            code = conn.get(phone).decode()
+        except:
+            raise Exception("验证码未发送或已过期")
+        if(code!=value):
+            raise Exception("验证码错误")
+        return value
+    # def validate(self, attrs):
+    #     print("attrs",attrs)
+    #     # raise Exception("sv")
+    #     return attrs
 
 
 class RegisterSer(serializers.ModelSerializer):
@@ -40,6 +78,8 @@ class LoginSer(serializers.ModelSerializer):
         }
         attrs["token"] = get_jwt(payload=payload)
         return attrs
+
+
 
 
 class BookSer(serializers.ModelSerializer):

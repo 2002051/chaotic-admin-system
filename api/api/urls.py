@@ -17,13 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
-from app01.views import admininfo, upload, book, campus, biographical, student,medias
+from app01.views import admininfo, upload, book, campus, biographical, student, medias
 from api import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("api/regist/", admininfo.RegistView.as_view()),
     path("api/register/", admininfo.RegisterView.as_view()),
     path("api/login/", admininfo.LoginView.as_view()),
+    path("api/sms/", admininfo.SmsView.as_view()),
+    path("api/codeimg/",admininfo.CodeImgView.as_view()),
+    # path("")
 
     path("api/book/", book.BookView.as_view({"get": "list", "post": "create", "delete": "delete"})),
     path("api/book/<int:pk>/", book.BookView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
@@ -42,13 +46,11 @@ urlpatterns = [
          student.StudentInfoView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
 
     path("api/medias/", medias.MediaView.as_view({"get": "list", "post": "create", "delete": "delete"})),
-    path("api/medias/<int:pk>/",medias.MediaView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
+    path("api/medias/<int:pk>/", medias.MediaView.as_view({"get": "retrieve", "put": "update", "delete": "destroy"})),
 
     # 视频播放相关
     path("api/video/list/", medias.VideoView.as_view()),
     path("api/video/blog/", medias.BlogView.as_view()),
-
-
 
     # 上传头像
     path("upload/", upload.AvatarUpload.as_view()),
@@ -60,11 +62,11 @@ urlpatterns = [
     path("upload/student/", upload.StudentUpload.as_view()),
 
     # 上传媒体图片
-    path("upload/image/",upload.ImageUpload.as_view()),
+    path("upload/image/", upload.ImageUpload.as_view()),
     # 媒体音频
-    path("upload/audio/",upload.AudioUpload.as_view()),
+    path("upload/audio/", upload.AudioUpload.as_view()),
     # 媒体视频
-    path("upload/video/",upload.VideoUpload.as_view()),
+    path("upload/video/", upload.VideoUpload.as_view()),
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
