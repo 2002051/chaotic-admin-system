@@ -5,6 +5,9 @@ from rest_framework.response import Response
 from app01.utils.ser_ import RegisterSer, LoginSer, RegistSer
 from app01 import models
 from app01.utils.res_ import MyResponse
+import jwt
+from django.conf import settings
+from app01.utils.exc_ import YtwExc
 
 
 class RegistView(MyResponse, APIView):
@@ -37,15 +40,31 @@ class LoginView(MyResponse, APIView):
     """登录"""
 
     def post(self, request):
-        form = LoginForm(data=request.data,ip=request.META['REMOTE_ADDR'])
+        form = LoginForm(data=request.data, ip=request.META['REMOTE_ADDR'])
         print(123)
         isT = form.is_valid()
 
         # print("isT",isT)
         token = get_jwt({**form.cleaned_data})
-        print("token",token)
+        print("token", token)
         return Response(token)
 
+
+class ValidateTokenView(MyResponse, APIView):
+    """校验token"""
+
+    def post(self, request):
+        token = request.data.get("token")
+        # print(token, token)
+        if not token:
+            raise Exception("缺少token")
+        user_dic = jwt.decode(token, settings.SECRET_KEY, algorithms="HS256")
+        username = user_dic.get("username")
+        password = user_dic.get("password")
+        obj = models.User.objects.filter(username=username, password=password)
+        if not obj:
+            raise Exception("token失效或不存在")
+        return Response("已登录")
 
     # def post(self, request):
     #     ser = LoginSer(data=request.data)

@@ -27,6 +27,7 @@ urlpatterns = [
     path("api/login/", admininfo.LoginView.as_view()),
     path("api/sms/", admininfo.SmsView.as_view()),
     path("api/codeimg/",admininfo.CodeImgView.as_view()),
+    path("api/validate/token/",admininfo.ValidateTokenView.as_view()),
     # path("")
 
     path("api/book/", book.BookView.as_view({"get": "list", "post": "create", "delete": "delete"})),

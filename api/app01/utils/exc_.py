@@ -20,10 +20,13 @@ from rest_framework.utils import formatting
 from rest_framework.exceptions import AuthenticationFailed, APIException
 
 
+class YtwExc(APIException):
+    status_code = status.HTTP_200_OK
+
+
 class MyAuthenticationFeild(AuthenticationFailed):
     # 无论何种权限异常，状态码都是200
     status_code = status.HTTP_200_OK
-
 
 
 def MyExcHandler(exc, context):
@@ -39,6 +42,9 @@ def MyExcHandler(exc, context):
     elif isinstance(exc, AuthenticationFailed):
         exc = MyAuthenticationFeild(*(exc.args))
         exc.x_code = 1003
+    elif isinstance(exc,YtwExc):
+        exc = MyAuthenticationFeild(*(exc.args))
+        exc.x_code = 4444
 
     if isinstance(exc, exceptions.APIException):
 
@@ -55,16 +61,16 @@ def MyExcHandler(exc, context):
             data = {'detail': exc.detail}
 
         set_rollback()
-        exc_code = getattr(exc,"x_code",None) or -1
-        data = {"code":exc_code,'detail': exc.detail}
+        exc_code = getattr(exc, "x_code", None) or -1
+        data = {"code": exc_code, 'detail': exc.detail}
         return Response(data, status=200, headers=headers)
         # return Response(data, status=exc.status_code, headers=headers)
-    data = {"code":-2,"detail":str(exc)}
+    data = {"code": -2, "detail": str(exc)}
 
     return Response(data, status=500)
 
-from django.utils.translation import gettext_lazy as _
 
+from django.utils.translation import gettext_lazy as _
 
 
 class MyException(APIException):
